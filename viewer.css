@@ -10,7 +10,7 @@
   --accent: #2f81f7;
   --accent-hover: #1f6feb;
   --danger: #f85149;
-  --success: #3fb950;
+  --success: #50ec66;
   --warning-bg: #2d2107;
   --warning-border: #9e6a03;
 }
@@ -301,7 +301,7 @@ th {
 td:first-child {
   width: 35%;
   font-weight: 600;
-  color: #9ecbff;
+  color: #50ec66;
 }
 
 .response-body {
