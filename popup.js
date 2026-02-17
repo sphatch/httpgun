@@ -10,6 +10,7 @@ const messageEl = document.querySelector("#message");
 const headersBodyEl = document.querySelector("#headers-body");
 const reloadCaptureEl = document.querySelector("#reload-capture");
 const openViewerEl = document.querySelector("#open-viewer");
+const grantAllSitesEl = document.querySelector("#grant-all-sites");
 const copyRawEl = document.querySelector("#copy-raw");
 const copyJsonEl = document.querySelector("#copy-json");
 const showSensitiveEl = document.querySelector("#show-sensitive");
@@ -34,8 +35,25 @@ chrome.runtime.onMessage.addListener((message) => {
   }
 });
 
+grantAllSitesEl.addEventListener("click", async () => {
+  const result = await requestAllSitesPermission();
+  if (!result.ok) {
+    setMessage(result.error || "Could not grant all-sites permission.", true);
+    return;
+  }
+
+  setMessage("All-sites permission granted.");
+  await refreshAllSitesButton();
+});
+
 reloadCaptureEl.addEventListener("click", async () => {
   if (!state.activeTab) {
+    return;
+  }
+
+  const permissionResult = await requestHostPermissionForUrl(state.activeTab.url || "");
+  if (!permissionResult.ok) {
+    setMessage(permissionResult.error || "Host permission was not granted.", true);
     return;
   }
 
@@ -102,6 +120,7 @@ searchEl.addEventListener("input", () => {
 
 async function init() {
   const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  await refreshAllSitesButton();
 
   if (!activeTab || !activeTab.id) {
     summaryEl.textContent = "No active tab found.";
@@ -283,6 +302,77 @@ function sendMessage(payload) {
       }
 
       resolve(response || { ok: false, error: "No response" });
+    });
+  });
+}
+
+function refreshAllSitesButton() {
+  return new Promise((resolve) => {
+    chrome.permissions.contains({ origins: ["<all_urls>"] }, (contains) => {
+      const hasAllSites = Boolean(contains) && !chrome.runtime.lastError;
+      grantAllSitesEl.disabled = hasAllSites;
+      grantAllSitesEl.textContent = hasAllSites ? "All Sites Granted" : "Grant All Sites";
+      resolve();
+    });
+  });
+}
+
+function requestAllSitesPermission() {
+  return new Promise((resolve) => {
+    chrome.permissions.request({ origins: ["<all_urls>"] }, (granted) => {
+      if (chrome.runtime.lastError) {
+        resolve({ ok: false, error: chrome.runtime.lastError.message });
+        return;
+      }
+
+      if (!granted) {
+        resolve({
+          ok: false,
+          error: "All-sites permission was denied in the browser prompt."
+        });
+        return;
+      }
+
+      resolve({ ok: true });
+    });
+  });
+}
+
+function requestHostPermissionForUrl(urlString) {
+  let pattern;
+
+  try {
+    const url = new URL(urlString);
+    if (!["http:", "https:"].includes(url.protocol)) {
+      return Promise.resolve({
+        ok: false,
+        error: "Capture is only supported on http:// or https:// pages."
+      });
+    }
+    pattern = `${url.origin}/*`;
+  } catch (_error) {
+    return Promise.resolve({
+      ok: false,
+      error: "Active tab URL is not eligible for host permissions."
+    });
+  }
+
+  return new Promise((resolve) => {
+    chrome.permissions.request({ origins: [pattern] }, (granted) => {
+      if (chrome.runtime.lastError) {
+        resolve({ ok: false, error: chrome.runtime.lastError.message });
+        return;
+      }
+
+      if (!granted) {
+        resolve({
+          ok: false,
+          error: "Host permission was denied in the browser prompt."
+        });
+        return;
+      }
+
+      resolve({ ok: true });
     });
   });
 }

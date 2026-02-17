@@ -22,12 +22,23 @@ const responseBodyEl = document.querySelector("#response-body");
 const blockedHeadersEl = document.querySelector("#blocked-headers");
 const showSensitiveEl = document.querySelector("#show-sensitive");
 const historyListEl = document.querySelector("#history-list");
+const grantAllSitesViewerEl = document.querySelector("#grant-all-sites-viewer");
 
 init().catch((error) => {
   setRequestMessage(error instanceof Error ? error.message : String(error), true);
 });
 
 addHeaderEl.addEventListener("click", () => addHeaderRow());
+grantAllSitesViewerEl.addEventListener("click", async () => {
+  const result = await requestAllSitesPermission();
+  if (!result.ok) {
+    setRequestMessage(result.error || "Could not grant all-sites permission.", true);
+    return;
+  }
+
+  setRequestMessage("All-sites permission granted.", false, true);
+  await refreshAllSitesButton();
+});
 
 bodyModeEl.addEventListener("change", () => {
   const mode = bodyModeEl.value;
@@ -49,6 +60,12 @@ sendEl.addEventListener("click", async () => {
   const payload = buildPayload();
 
   if (!payload) {
+    return;
+  }
+
+  const permissionResult = await requestHostPermissionForUrl(payload.url);
+  if (!permissionResult.ok) {
+    setRequestMessage(permissionResult.error || "Host permission was not granted.", true);
     return;
   }
 
@@ -86,6 +103,7 @@ showSensitiveEl.addEventListener("change", () => {
 async function init() {
   addHeaderRow("Accept", "application/json");
   bodyModeEl.dispatchEvent(new Event("change"));
+  await refreshAllSitesButton();
 
   const params = new URLSearchParams(window.location.search);
   const sourceTabIdParam = params.get("sourceTabId");
@@ -312,6 +330,77 @@ function sendMessage(payload) {
       }
 
       resolve(response || { ok: false, error: "No response" });
+    });
+  });
+}
+
+function refreshAllSitesButton() {
+  return new Promise((resolve) => {
+    chrome.permissions.contains({ origins: ["<all_urls>"] }, (contains) => {
+      const hasAllSites = Boolean(contains) && !chrome.runtime.lastError;
+      grantAllSitesViewerEl.disabled = hasAllSites;
+      grantAllSitesViewerEl.textContent = hasAllSites ? "All Sites Granted" : "Grant All Sites";
+      resolve();
+    });
+  });
+}
+
+function requestAllSitesPermission() {
+  return new Promise((resolve) => {
+    chrome.permissions.request({ origins: ["<all_urls>"] }, (granted) => {
+      if (chrome.runtime.lastError) {
+        resolve({ ok: false, error: chrome.runtime.lastError.message });
+        return;
+      }
+
+      if (!granted) {
+        resolve({
+          ok: false,
+          error: "All-sites permission was denied in the browser prompt."
+        });
+        return;
+      }
+
+      resolve({ ok: true });
+    });
+  });
+}
+
+function requestHostPermissionForUrl(urlString) {
+  let pattern;
+
+  try {
+    const url = new URL(urlString);
+    if (!["http:", "https:"].includes(url.protocol)) {
+      return Promise.resolve({
+        ok: false,
+        error: "Only http:// and https:// URLs are supported."
+      });
+    }
+    pattern = `${url.origin}/*`;
+  } catch (_error) {
+    return Promise.resolve({
+      ok: false,
+      error: "URL is not eligible for host permissions."
+    });
+  }
+
+  return new Promise((resolve) => {
+    chrome.permissions.request({ origins: [pattern] }, (granted) => {
+      if (chrome.runtime.lastError) {
+        resolve({ ok: false, error: chrome.runtime.lastError.message });
+        return;
+      }
+
+      if (!granted) {
+        resolve({
+          ok: false,
+          error: "Host permission was denied in the browser prompt."
+        });
+        return;
+      }
+
+      resolve({ ok: true });
     });
   });
 }

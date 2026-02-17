@@ -1,14 +1,27 @@
 :root {
-  color-scheme: light;
-  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color-scheme: dark;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --bg: #0d1117;
+  --panel: #161b22;
+  --panel-alt: #0f141b;
+  --border: #30363d;
+  --text: #c9d1d9;
+  --muted: #8b949e;
+  --accent: #2f81f7;
+  --accent-hover: #1f6feb;
+  --danger: #f85149;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  width: 460px;
-  min-height: 480px;
-  background: #f4f6fb;
-  color: #1f2a37;
+  width: 500px;
+  min-height: 520px;
+  background: radial-gradient(circle at top right, #1d2733 0%, var(--bg) 42%);
+  color: var(--text);
 }
 
 .popup {
@@ -19,7 +32,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   margin-bottom: 10px;
 }
 
@@ -27,6 +40,12 @@ body {
   margin: 0;
   font-size: 16px;
   font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 6px;
 }
 
 button,
@@ -34,34 +53,58 @@ input,
 select,
 textarea {
   font: inherit;
+  color: var(--text);
 }
 
 button {
-  border: 1px solid #c7d2e6;
-  background: #fff;
-  color: #1f2a37;
-  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #21262d;
+  border-radius: 6px;
   padding: 6px 10px;
   cursor: pointer;
 }
 
+button:hover:not(:disabled) {
+  border-color: #8b949e;
+  background: #30363d;
+}
+
 button:disabled {
-  opacity: 0.5;
+  opacity: 0.58;
   cursor: default;
 }
 
+#open-viewer,
+#reload-capture {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+}
+
+#open-viewer:hover:not(:disabled),
+#reload-capture:hover:not(:disabled) {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
 .panel {
-  background: #fff;
-  border: 1px solid #d6deef;
+  background: var(--panel);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 10px;
+  box-shadow: 0 0 0 1px rgb(240 246 252 / 3%);
 }
 
 .summary {
   font-size: 12px;
   margin-bottom: 10px;
-  line-height: 1.4;
+  line-height: 1.45;
   word-break: break-word;
+  color: var(--muted);
+}
+
+.summary strong {
+  color: var(--text);
 }
 
 .actions,
@@ -78,8 +121,14 @@ button:disabled {
 .controls input[type="search"] {
   flex: 1;
   padding: 6px 8px;
-  border: 1px solid #c7d2e6;
-  border-radius: 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+}
+
+.controls input[type="search"]:focus {
+  outline: 2px solid rgb(47 129 247 / 40%);
+  outline-offset: 0;
 }
 
 .controls label {
@@ -88,26 +137,35 @@ button:disabled {
   align-items: center;
   gap: 4px;
   white-space: nowrap;
+  color: var(--muted);
+}
+
+.controls label input {
+  width: auto;
 }
 
 .message {
   min-height: 16px;
   font-size: 12px;
-  color: #334155;
+  color: var(--muted);
   margin: 0 0 8px;
 }
 
 .message.error {
-  color: #b42318;
+  color: var(--danger);
 }
 
 .redirects {
   margin-bottom: 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 8px;
-  background: #f9fbff;
+  background: var(--panel-alt);
   font-size: 12px;
+}
+
+.redirects strong {
+  color: var(--text);
 }
 
 .redirects.hidden {
@@ -117,6 +175,7 @@ button:disabled {
 .redirect-hop {
   margin-bottom: 4px;
   word-break: break-word;
+  color: var(--muted);
 }
 
 .redirect-hop:last-child {
@@ -124,9 +183,9 @@ button:disabled {
 }
 
 .table-wrap {
-  max-height: 280px;
+  max-height: 300px;
   overflow: auto;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   border-radius: 8px;
 }
 
@@ -140,23 +199,27 @@ table {
 th,
 td {
   text-align: left;
-  padding: 6px 8px;
-  border-bottom: 1px solid #edf2fa;
+  padding: 7px 8px;
+  border-bottom: 1px solid #21262d;
   vertical-align: top;
 }
 
 th {
   position: sticky;
   top: 0;
-  background: #f5f8ff;
+  background: #161b22;
+  color: var(--muted);
+  font-weight: 600;
 }
 
 td:first-child {
-  width: 35%;
+  width: 36%;
   font-weight: 600;
   word-break: break-word;
+  color: #9ecbff;
 }
 
 td:last-child {
   word-break: break-word;
+  color: var(--text);
 }

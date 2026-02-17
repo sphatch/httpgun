@@ -270,11 +270,7 @@ async function ensureHostPermission(urlString) {
   }
 
   const contains = await chrome.permissions.contains({ origins: [pattern] });
-  if (contains) {
-    return true;
-  }
-
-  return chrome.permissions.request({ origins: [pattern] });
+  return contains;
 }
 
 async function executeCustomRequest(payload) {

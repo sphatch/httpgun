@@ -13,6 +13,7 @@ HTTPGun is a Chrome Manifest V3 extension for:
 - Optional redirect chain display.
 - Header search and clipboard copy (raw / JSON).
 - Sensitive-header masking (`authorization`, `cookie`, `set-cookie`) with toggle.
+- One-click **Grant All Sites** action to avoid repeated per-host permission prompts.
 - Request builder with method, URL, headers, body mode (`none`, `raw`, `json`).
 - Restricted-header filtering and warning messages.
 - Response viewer for status, headers, and body preview (JSON/text/binary metadata).
