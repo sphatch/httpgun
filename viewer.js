@@ -29,6 +29,13 @@ init().catch((error) => {
 });
 
 addHeaderEl.addEventListener("click", () => addHeaderRow());
+urlEl.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    sendEl.click();
+  }
+});
+
 grantAllSitesViewerEl.addEventListener("click", async () => {
   const result = await requestAllSitesPermission();
   if (!result.ok) {
@@ -143,11 +150,16 @@ function addHeaderRow(name = "", value = "") {
 }
 
 function buildPayload() {
-  const url = urlEl.value.trim();
+  const rawUrl = urlEl.value.trim();
 
-  if (!url) {
+  if (!rawUrl) {
     setRequestMessage("URL is required.", true);
     return null;
+  }
+
+  const url = normalizeUrlInput(rawUrl);
+  if (url !== rawUrl) {
+    urlEl.value = url;
   }
 
   try {
@@ -178,6 +190,19 @@ function buildPayload() {
     followRedirects: followRedirectsEl.checked,
     includeCredentials: includeCredentialsEl.checked
   };
+}
+
+function normalizeUrlInput(value) {
+  const trimmed = String(value || "").trim();
+  if (!trimmed) {
+    return trimmed;
+  }
+
+  if (/^[a-z][a-z0-9+.-]*:\/\//i.test(trimmed)) {
+    return trimmed;
+  }
+
+  return `https://${trimmed}`;
 }
 
 function renderResponse(response) {

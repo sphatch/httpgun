@@ -208,7 +208,7 @@ th {
   position: sticky;
   top: 0;
   background: #161b22;
-  color: var(--muted);
+  color: #ffffff;
   font-weight: 600;
 }
 
@@ -216,7 +216,7 @@ td:first-child {
   width: 36%;
   font-weight: 600;
   word-break: break-word;
-  color: #9ecbff;
+  color: #50ec66;
 }
 
 td:last-child {
