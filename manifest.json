@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "HTTPGun",
+  "version": "0.1.0",
+  "description": "Inspect top-level response headers and run custom HTTP requests.",
+  "permissions": ["activeTab", "tabs", "webRequest", "storage"],
+  "optional_host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "HTTPGun",
+    "default_popup": "popup.html"
+  }
+}

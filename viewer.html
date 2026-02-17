@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HTTPGun Request Builder</title>
+    <link rel="stylesheet" href="viewer.css" />
+  </head>
+  <body>
+    <main class="layout">
+      <section class="request-panel">
+        <h1>HTTPGun Request Builder</h1>
+
+        <div class="field-row">
+          <label for="method">Method</label>
+          <select id="method">
+            <option>GET</option>
+            <option>POST</option>
+            <option>PUT</option>
+            <option>PATCH</option>
+            <option>DELETE</option>
+          </select>
+        </div>
+
+        <div class="field-row">
+          <label for="url">URL</label>
+          <input id="url" type="url" placeholder="https://api.example.com/data" />
+        </div>
+
+        <fieldset class="headers-box">
+          <legend>Headers</legend>
+          <div id="headers-list"></div>
+          <button id="add-header" type="button">Add Header</button>
+        </fieldset>
+
+        <div class="field-row">
+          <label for="body-mode">Body</label>
+          <select id="body-mode">
+            <option value="none">None</option>
+            <option value="raw">Raw</option>
+            <option value="json">JSON</option>
+          </select>
+        </div>
+
+        <div class="field-row field-row--column">
+          <textarea id="body" rows="8" placeholder="Request body"></textarea>
+          <button id="format-json" type="button">Format JSON</button>
+        </div>
+
+        <div class="field-row options">
+          <label>
+            <input id="follow-redirects" type="checkbox" checked />
+            Follow redirects
+          </label>
+          <label>
+            <input id="include-credentials" type="checkbox" />
+            Include credentials
+          </label>
+        </div>
+
+        <div class="field-row">
+          <button id="send" type="button" class="send-btn">Send Request</button>
+        </div>
+
+        <p id="request-message" class="message"></p>
+
+        <section class="history">
+          <h2>Recent requests</h2>
+          <ul id="history-list"></ul>
+        </section>
+      </section>
+
+      <section class="response-panel">
+        <header class="response-header">
+          <h2>Response</h2>
+          <label>
+            <input id="show-sensitive" type="checkbox" />
+            Show sensitive values
+          </label>
+        </header>
+
+        <div id="response-summary" class="response-summary">No response yet.</div>
+        <div id="blocked-headers" class="blocked-headers hidden"></div>
+
+        <h3>Headers</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody id="response-headers-body">
+              <tr>
+                <td colspan="2">No headers to show.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Body Preview</h3>
+        <pre id="response-body" class="response-body">No body to show.</pre>
+      </section>
+    </main>
+
+    <script src="viewer.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HTTPGun</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="popup">
+      <header class="popup__header">
+        <h1>HTTPGun</h1>
+        <button id="open-viewer" type="button">Open Request Builder</button>
+      </header>
+
+      <section class="panel">
+        <div id="summary" class="summary">Loading active tab...</div>
+
+        <div class="actions">
+          <button id="reload-capture" type="button">Reload &amp; Capture</button>
+          <button id="copy-raw" type="button" disabled>Copy Raw</button>
+          <button id="copy-json" type="button" disabled>Copy JSON</button>
+        </div>
+
+        <div class="controls">
+          <input id="search" type="search" placeholder="Search headers" />
+          <label>
+            <input id="show-sensitive" type="checkbox" />
+            Show sensitive values
+          </label>
+        </div>
+
+        <p id="message" class="message"></p>
+
+        <div id="redirects" class="redirects hidden"></div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody id="headers-body">
+              <tr>
+                <td colspan="2">No headers captured yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="popup.js" defer></script>
+  </body>
+</html>
