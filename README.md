@@ -24,7 +24,7 @@ HTTPGun is a Chrome Manifest V3 extension for:
 1. Open `chrome://extensions`.
 2. Enable **Developer mode**.
 3. Click **Load unpacked**.
-4. Select `/Users/spencer/Desktop/Projects/httpgun`.
+4. Select the folder location where you downloaded this plugin.
 
 ## Usage
 
